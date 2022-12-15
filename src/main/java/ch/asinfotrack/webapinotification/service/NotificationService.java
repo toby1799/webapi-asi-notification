@@ -3,8 +3,8 @@ package ch.asinfotrack.webapinotification.service;
 import ch.asinfotrack.webapinotification.helper.DEPARTMENT;
 import ch.asinfotrack.webapinotification.model.Notification;
 import ch.asinfotrack.webapinotification.repository.NotificationRepository;
-import org.springframework.boot.configurationprocessor.json.JSONException;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
