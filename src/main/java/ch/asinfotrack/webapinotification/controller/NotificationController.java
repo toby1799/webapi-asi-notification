@@ -44,7 +44,7 @@ public class NotificationController {
         notificationService.create(jsonObject);
     }
 
-    @RequestMapping(value = "/notification",method= {RequestMethod.DELETE, RequestMethod.GET})
+    @RequestMapping(value = "/notifications",method=RequestMethod.DELETE)
     @ResponseBody
     public void deletePost(@RequestParam(value = "id") Optional<Long> id, @RequestParam(value = "title") Optional<String> title) throws IOException {
         if (id.isPresent()) {
