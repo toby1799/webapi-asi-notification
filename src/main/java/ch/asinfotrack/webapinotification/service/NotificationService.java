@@ -39,17 +39,38 @@ public class NotificationService {
         if (json.has("schemaId")) {
             notification = this.transform(json);
         } else {
+            DEPARTMENT department;
+            switch (json.get("department").toString()) {
+                case "DEVOPS":
+                    department = DEPARTMENT.DEVOPS;
+                    break;
+                case "SWE":
+                    department = DEPARTMENT.SWE;
+                    break;
+                case "IBMI":
+                    department = DEPARTMENT.IBMI;
+                    break;
+                case "SOL":
+                    department = DEPARTMENT.SOL;
+                    break;
+                default:
+                    department = DEPARTMENT.ICT;
+                    break;
+            }
+
+
             notification = new Notification(
                     json.get("title").toString(),
                     json.get("host").toString(),
                     json.get("timestamp").toString(),
-                    DEPARTMENT.DEVOPS);
+                    department);
         }
-        Date date = new Date();
 
-
-        repository.saveAndFlush(notification);
-        webSocketService.sendNotification(notification, MSGTYPE.CREATE);
+        assert notification != null;
+        if (repository.findAllByTitle(notification.getTitle()).size() == 0) {
+            repository.saveAndFlush(notification);
+            webSocketService.sendNotification(notification, MSGTYPE.CREATE);
+        }
     }
 
     public void delete(Long id) throws IOException {
@@ -63,13 +84,24 @@ public class NotificationService {
         }
     }
 
+    public void delete(String title) throws IOException {
+        List<Notification> notifications;
+
+        notifications = repository.findAllByTitle(title);
+
+        if (notifications.size() > 0) {
+            repository.delete(notifications.get(0));
+            webSocketService.sendNotification(notifications.get(0), MSGTYPE.DELETE);
+        }
+    }
+
     private Notification transform(JSONObject json) throws JSONException {
         if (json.has("data")) {
             JSONObject data = json.getJSONObject("data");
             return new Notification(
-                    data.getJSONObject("alertContext").get("condition").toString(),
-                    json.get("host").toString(),
-                    json.get("timestamp").toString(),
+                    data.getJSONObject("essentials").get("alertRule").toString(),
+                    "Azure",
+                    data.getJSONObject("alertContext").get("eventTimestamp").toString(),
                     DEPARTMENT.DEVOPS);
         }
         return null;

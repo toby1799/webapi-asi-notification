@@ -4,5 +4,6 @@ public enum DEPARTMENT {
     ICT,
     DEVOPS,
     IBMI,
-    SOL
+    SOL,
+    SWE
 }

@@ -14,6 +14,7 @@ import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class NotificationController {
@@ -32,6 +33,7 @@ public class NotificationController {
 
     @PostMapping("/debug")
     public String debug(@RequestParam(name = "token") String token, @RequestBody String response) {
+        System.out.println(response);
         return response;
     }
 
@@ -44,8 +46,11 @@ public class NotificationController {
 
     @RequestMapping(value = "/notification",method= {RequestMethod.DELETE, RequestMethod.GET})
     @ResponseBody
-    public void deletePost(@RequestParam(value = "id") Long id) throws IOException {
-        System.out.println(id);
-        notificationService.delete(id);
+    public void deletePost(@RequestParam(value = "id") Optional<Long> id, @RequestParam(value = "title") Optional<String> title) throws IOException {
+        if (id.isPresent()) {
+            notificationService.delete(id.get());
+        } else if (title.isPresent()){
+            notificationService.delete(title.get());
+        }
     }
 }
